@@ -1,0 +1,102 @@
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:00:41.306Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:00:41.318Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:00:50.580Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:00:50.591Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:03:36.003Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:03:36.013Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:19:09.111Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:19:09.124Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:23:31.114Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:23:31.125Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:25:22.243Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:25:22.253Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:25:36.711Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T05:25:36.724Z'
+}
+Mon Jun 05 2023 11:30:4} [um] info: database connected
+Mon Jun 05 2023 11:30:4} [um] info: Application listening on port 5000
+Mon Jun 05 2023 11:30:23} [um] info: database connected
+Mon Jun 05 2023 11:30:23} [um] info: Application listening on port 5000

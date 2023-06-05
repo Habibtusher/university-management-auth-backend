@@ -1,0 +1,98 @@
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:52:50.429Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:52:50.447Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:53:36.502Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:53:36.514Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:54:08.701Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:54:08.712Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:54:50.409Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:54:50.419Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:57:31.424Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:57:31.435Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:58:39.064Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:58:39.077Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:59:49.677Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T04:59:49.687Z'
+}
