@@ -1,0 +1,28 @@
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T03:52:01.132Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T03:52:01.150Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T03:53:20.725Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-05T03:53:20.735Z'
+}
