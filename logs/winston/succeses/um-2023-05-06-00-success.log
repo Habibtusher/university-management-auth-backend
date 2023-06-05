@@ -1,0 +1,151 @@
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:06.990Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:07.002Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:41.934Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:41.944Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:49.366Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:49.378Z'
+}
+{
+  '0': {
+    _id: new ObjectId("6479cfc02dbcd8ae4dc083d9"),
+    id: '00001',
+    role: 'student',
+    password: '###AAAaaa',
+    createdAt: 2023-06-02T11:17:20.809Z,
+    updatedAt: 2023-06-02T11:17:20.809Z,
+    __v: 0
+  },
+  '1': {
+    _id: new ObjectId("6479cfc92dbcd8ae4dc083dc"),
+    id: '00002',
+    role: 'student',
+    password: '###AAAaaa',
+    createdAt: 2023-06-02T11:17:29.792Z,
+    updatedAt: 2023-06-02T11:17:29.792Z,
+    __v: 0
+  },
+  service: 'user-service',
+  level: 'info',
+  message: '🚀 ~ file: user.controllers.ts:9 ~ constcreateUser:RequestHandler= ~ result:',
+  label: 'um',
+  timestamp: '2023-06-04T18:00:51.392Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:01:25.654Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:01:25.664Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:02:08.577Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:02:08.588Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:02:36.671Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:02:36.682Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:03:37.673Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:03:37.684Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:04:20.039Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:04:20.050Z'
+}
+{
+  message: 'database connected',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:04:55.200Z'
+}
+{
+  message: 'Application listening on port 5000',
+  level: 'info',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-04T18:04:55.213Z'
+}
