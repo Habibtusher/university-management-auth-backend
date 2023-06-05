@@ -1,6 +1,6 @@
-import { genericErrorMeaagae } from './error'
+import { genericErrorMeaagae } from './error';
 export type genericErrorResponse = {
-  statusCode: number
-  message: string
-  errorMessages: genericErrorMeaagae[]
-}
+  statusCode: number;
+  message: string;
+  errorMessages: genericErrorMeaagae[];
+};
