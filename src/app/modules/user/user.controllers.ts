@@ -1,10 +1,10 @@
-import { RequestHandler, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { UserService } from './user.service';
 
 const createUser: RequestHandler = async (req, res, next) => {
   try {
-    const { user } = req.body;
-    const result = await UserService.createUserToDb(user);
+    const { ...userData } = req.body;
+    const result = await UserService.createUserToDb(userData);
 
     res.status(200).json({
       success: true,
@@ -19,21 +19,17 @@ const createUser: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-const getUsers = async (res: Response) => {
+const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await UserService.getUsersFromDb();
-    if (result) {
-      res.status(200).json({
-        success: true,
-        message: 'successfully!',
-        data: result,
-      });
-    }
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      messgae: 'faield to create user',
+    const response = await UserService.getUsersFromDb();
+
+    res.status(200).json({
+      success: true,
+      message: 'successfully!',
+      data: response,
     });
+  } catch (error) {
+    next(error);
   }
 };
 export const UserController = {

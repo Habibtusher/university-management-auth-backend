@@ -18,7 +18,10 @@ const createUserToDb = async (user: IUser): Promise<IUser | null> => {
   return createdUser;
 };
 const getUsersFromDb = async () => {
-  return User.find({});
+  const result = await User.find();
+  // eslint-disable-next-line no-console
+  // console.log("🚀 ~ file: user.service.ts:23 ~ getUsersFromDb ~ result:", result)
+  return result;
 };
 export const UserService = {
   createUserToDb,
