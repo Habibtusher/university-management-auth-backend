@@ -1,27 +1,30 @@
-import { Request, RequestHandler, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AcademicSemesterService } from './academicSemester.service';
+import catchasync from '../../../shared/catchAsync';
+import sendResponse from '../../../shared/sendResponse';
+import httpStatus from 'http-status';
 
-const createAcademicSemister: RequestHandler = async (req, res, next) => {
-  try {
+const createAcademicSemister = catchasync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { ...academicSemesterData } = req.body;
     const result = await AcademicSemesterService.createSemesterToDb(
       academicSemesterData
     );
-
-    res.status(200).json({
+    next();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: 'academic semester created successfully!',
       data: result,
     });
-  } catch (error) {
-    // res.status(400).json({
-    //   success: false,
-    //   messgae: 'faield to create user',
-    // })
-    next(error);
   }
-};
-const getAcademicSemester = async (req: Request, res: Response) => {
+);
+
+const getAcademicSemester = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const response = await AcademicSemesterService.getSemesterFromDb();
     res.status(200).json({
@@ -30,10 +33,7 @@ const getAcademicSemester = async (req: Request, res: Response) => {
       data: response,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      messgae: 'faield load user',
-    });
+    next(error);
   }
 };
 export const AcademicSemesterControllers = {
