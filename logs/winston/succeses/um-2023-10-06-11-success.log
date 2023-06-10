@@ -1,0 +1,29 @@
+Sat Jun 10 2023 11:1:46} [um] info: database connected
+Sat Jun 10 2023 11:1:46} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:3:25} [um] info: database connected
+Sat Jun 10 2023 11:3:25} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:3:29} [um] info: {
+  _id: new ObjectId("6482fd09de13a24ab28517b4"),
+  title: 'Autum',
+  year: '2024',
+  code: '01',
+  startMonth: 'January',
+  endMonth: 'April',
+  createdAt: 2023-06-09T10:20:57.887Z,
+  updatedAt: 2023-06-09T10:20:57.887Z,
+  __v: 0
+}
+Sat Jun 10 2023 11:3:57} [um] info: database connected
+Sat Jun 10 2023 11:3:57} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:4:8} [um] info: database connected
+Sat Jun 10 2023 11:4:8} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:4:16} [um] info: database connected
+Sat Jun 10 2023 11:4:16} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:49:38} [um] info: database connected
+Sat Jun 10 2023 11:49:38} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:49:58} [um] info: database connected
+Sat Jun 10 2023 11:49:58} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:54:25} [um] info: database connected
+Sat Jun 10 2023 11:54:25} [um] info: Application listening on port 5000
+Sat Jun 10 2023 11:58:42} [um] info: database connected
+Sat Jun 10 2023 11:58:42} [um] info: Application listening on port 5000

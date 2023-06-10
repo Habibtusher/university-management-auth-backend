@@ -4,3 +4,11 @@ export type genericErrorResponse = {
   message: string;
   errorMessages: genericErrorMeaagae[];
 };
+export type IGenericResponse<T> = {
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  data: T;
+};
