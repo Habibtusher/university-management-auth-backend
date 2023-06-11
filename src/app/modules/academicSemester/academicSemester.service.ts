@@ -23,7 +23,6 @@ const createSemesterToDb = async (
   const result = await AcademicSemester.create(payload);
   return result;
 };
-
 const getSemesterFromDb = async (
   filters: IAcademicSemesterFilters,
   paginationOtp: IPaginatioOpts
