@@ -4,18 +4,18 @@ import catchasync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 
-const createUser: RequestHandler = catchasync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { ...userData } = req.body;
-    const result = await UserService.createUserToDb(userData);
+const createStudent: RequestHandler = catchasync(
+  async (req: Request, res: Response) => {
+    const { student, ...userData } = req.body;
+    const result = await UserService.createStudentToDb(student, userData);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'user created successfully!',
+      message: 'Student created successfully!',
       data: result,
     });
-    next();
+    // next();
   }
 );
 const getUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +32,6 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 export const UserController = {
-  createUser,
+  createStudent,
   getUsers,
 };

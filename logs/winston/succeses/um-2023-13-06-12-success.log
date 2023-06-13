@@ -1,0 +1,95 @@
+Tue Jun 13 2023 12:10:57} [um] info: database connected
+Tue Jun 13 2023 12:10:57} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:12:13} [um] info: database connected
+Tue Jun 13 2023 12:12:13} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:12:43} [um] info: database connected
+Tue Jun 13 2023 12:12:43} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:16:20} [um] info: database connected
+Tue Jun 13 2023 12:16:20} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:17:2} [um] info: database connected
+Tue Jun 13 2023 12:17:2} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:18:48} [um] info: database connected
+Tue Jun 13 2023 12:18:48} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:21:4} [um] info: database connected
+Tue Jun 13 2023 12:21:4} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:21:48} [um] info: database connected
+Tue Jun 13 2023 12:21:48} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:21:56} [um] info: database connected
+Tue Jun 13 2023 12:21:56} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:22:1} [um] info: {
+  _id: new ObjectId("64880b08e594cc0ee53c2703"),
+  id: '290300001',
+  role: 'student',
+  password: '123456',
+  student: {
+    _id: new ObjectId("64880b08e594cc0ee53c26fe"),
+    id: '290300001',
+    name: {
+      firstName: 'Hbaibur',
+      lastName: 'Rahman',
+      _id: new ObjectId("64880b08e594cc0ee53c26ff")
+    },
+    gender: 'male',
+    dateOfBirth: '15-03-1998',
+    email: 'tusherhrt@gmail.com',
+    contactNo: '01771531336',
+    emergencyContactNo: '01771531336',
+    bloodGroup: 'O+',
+    presentAddress: 'TNG',
+    permanentAddress: 'TNG',
+    guardian: {
+      fatherName: 'Taherul Islam',
+      fatherOccupation: 'Job',
+      fatherContactNo: '01717164278',
+      motherName: 'Hosna Ara',
+      motherOccupation: 'Housewife',
+      motherContactNo: '01944160878',
+      address: 'TNG',
+      _id: new ObjectId("64880b08e594cc0ee53c2700")
+    },
+    localGuardian: {
+      name: 'Tania',
+      occupation: 'Housewide',
+      contactNo: '152485411',
+      address: 'TNG',
+      _id: new ObjectId("64880b08e594cc0ee53c2701")
+    },
+    academicFaculty: {
+      _id: new ObjectId("6485517882c507994c7b0a9e"),
+      title: 'Faculty Of Science and Engineering',
+      createdAt: 2023-06-11T04:45:44.527Z,
+      updatedAt: 2023-06-11T10:07:11.894Z,
+      __v: 0
+    },
+    academicDepartment: {
+      _id: new ObjectId("64859c54a89fc7f19444b7a7"),
+      title: 'Department of computer science',
+      academicFaculty: new ObjectId("6485517882c507994c7b0a9e"),
+      createdAt: 2023-06-11T10:05:08.023Z,
+      updatedAt: 2023-06-11T10:05:08.023Z,
+      __v: 0
+    },
+    academicSemester: {
+      _id: new ObjectId("6482fcccde13a24ab28517aa"),
+      title: 'Fall',
+      year: '2029',
+      code: '03',
+      startMonth: 'September',
+      endMonth: 'December',
+      createdAt: 2023-06-09T10:19:56.942Z,
+      updatedAt: 2023-06-09T10:19:56.942Z,
+      __v: 0
+    },
+    profileImage: '',
+    createdAt: 2023-06-13T06:22:00.046Z,
+    updatedAt: 2023-06-13T06:22:00.046Z,
+    __v: 0
+  },
+  createdAt: 2023-06-13T06:22:00.329Z,
+  updatedAt: 2023-06-13T06:22:00.329Z,
+  __v: 0
+}
+Tue Jun 13 2023 12:22:19} [um] info: database connected
+Tue Jun 13 2023 12:22:19} [um] info: Application listening on port 5000
+Tue Jun 13 2023 12:22:25} [um] info: database connected
+Tue Jun 13 2023 12:22:25} [um] info: Application listening on port 5000
