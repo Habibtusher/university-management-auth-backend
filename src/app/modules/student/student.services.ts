@@ -36,18 +36,18 @@ const getAllStudentsFromDb = async (
     });
   }
 
-  const { page, limit, skip, sortBy, sortOrder } =
-    calculatePagination(paginationOtp);
-  const sortOpts: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortOpts[sortBy] = sortOrder;
-  }
   const whereCondition =
     andCondition.length > 0
       ? {
           $and: andCondition,
         }
       : {};
+  const { page, limit, skip, sortBy, sortOrder } =
+    calculatePagination(paginationOtp);
+  const sortOpts: { [key: string]: SortOrder } = {};
+  if (sortBy && sortOrder) {
+    sortOpts[sortBy] = sortOrder;
+  }
   const result = await Student.find(whereCondition)
     .populate('academicSemester')
     .populate('academicDepartment')
