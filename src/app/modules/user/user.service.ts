@@ -4,9 +4,11 @@ import AcademicSemester from '../academicSemester/academicSemester.model';
 import { IStudent } from '../student/student.interface';
 import { IUser } from './user.interface';
 import User from './user.model';
-import { generateStudentId } from './user.utils';
+import { generateFacultyId, generateStudentId } from './user.utils';
 import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
+import { IFaculty } from '../faculty/faculty.interface';
+import { Faculty } from '../faculty/faculty.model';
 
 const createStudentToDb = async (
   student: IStudent,
@@ -61,13 +63,57 @@ const createStudentToDb = async (
 
   return newUserData;
 };
+const createFacultyToDb = async (faculty: IFaculty, user: IUser) => {
+  let newUserData = null;
+  if (!user.password) {
+    user.password = '###AAAaaa';
+  }
+  user.role = 'faculty';
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const id = await generateFacultyId();
+    user.id = id;
+    faculty.id = id;
+    const newFaculty = await Faculty.create([faculty], { session });
+    if (!newFaculty.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create faculty');
+    }
+    user.faculty = newFaculty[0]._id;
+    const newUser = await User.create([user], { session });
+    if (!newUser.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create faculty');
+    }
+    newUserData = newUser[0];
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  }
+  if (newUserData) {
+    newUserData = await User.findOne({ id: newUserData.id }).populate({
+      path: 'faculty',
+      populate: [
+        {
+          path: 'department',
+        },
+        {
+          path: 'faculty',
+        },
+      ],
+    });
+  }
+
+  return newUserData;
+};
 const getUsersFromDb = async () => {
   const result = await User.find();
-  // eslint-disable-next-line no-console
-  // console.log("🚀 ~ file: user.service.ts:23 ~ getUsersFromDb ~ result:", result)
+
   return result;
 };
 export const UserService = {
   createStudentToDb,
   getUsersFromDb,
+  createFacultyToDb,
 };
