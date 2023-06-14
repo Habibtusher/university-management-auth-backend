@@ -219,6 +219,11 @@
             "date": 1686722865362,
             "name": "G:\\Level 2 PHero\\university-management-auth-backend\\logs\\winston\\succeses\\um-2023-14-06-12-success.log",
             "hash": "3454f290fe6fff367fcce78754aad49c25f37f8c30e20e4363013dfae1f46a82"
+        },
+        {
+            "date": 1686726144976,
+            "name": "G:\\Level 2 PHero\\university-management-auth-backend\\logs\\winston\\succeses\\um-2023-14-06-13-success.log",
+            "hash": "013efb68223d18c63865fadbe6399b6f0ac1ce74680c5687630ce60e81b90b4d"
         }
     ],
     "hashType": "sha256"
