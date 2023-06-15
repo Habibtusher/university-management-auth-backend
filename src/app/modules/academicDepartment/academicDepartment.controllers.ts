@@ -31,7 +31,8 @@ const getDepartment = catchasync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Academic department retrived successfully!',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 const deleteDepartment = catchasync(async (req: Request, res: Response) => {
