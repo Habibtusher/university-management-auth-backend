@@ -49,11 +49,6 @@ export const generateFacultyId = async (): Promise<string> => {
   let incrementedId = (parseInt(currentId) + 1).toString().padStart(5, '0');
 
   incrementedId = `F-${incrementedId}`;
-  // eslint-disable-next-line no-console
-  console.log(
-    '🚀 ~ file: user.utils.ts:25 ~ incrementedId=`${academicSemester.year.substring ~ incrementedId:',
-    incrementedId
-  );
 
   return incrementedId;
 };

@@ -1,10 +1,13 @@
 import { IGenericResponse } from './../../../interfaces/common';
-import { SortOrder } from 'mongoose';
+import mongoose, { SortOrder } from 'mongoose';
 import { calculatePagination } from '../../../helper/paginationHelper';
 import { IPaginatioOpts } from '../../../interfaces/pagination';
 import { IFaculty, IFacultyFilters } from './faculty.interface';
 import { Faculty } from './faculty.model';
 import { facultySearchableFields } from './faculty.const';
+import User from '../user/user.model';
+import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
 
 const getFacutiesFromDb = async (
   filters: IFacultyFilters,
@@ -84,6 +87,63 @@ const getFacutiesFromDb = async (
     data: result,
   };
 };
+const getSingleFacultyFromDb = async (id: string): Promise<IFaculty | null> => {
+  const result = await Faculty.findOne({ id })
+    .populate('department')
+    .populate('faculty');
+  return result;
+};
+const deleteFacultyFromDb = async (id: string): Promise<IFaculty | null> => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const deleteFaculty = await Faculty.findOneAndDelete({ id }, { session })
+      .populate('department')
+      .populate('faculty');
+    if (!deleteFaculty) {
+      throw new Error('No faculty found with this id');
+    }
+    const deleteUser = await User.findOneAndDelete({ id }, { session });
+    if (!deleteUser) {
+      throw new Error('Faield to delete user');
+    }
+    await session.commitTransaction();
+    session.endSession();
+    return deleteFaculty;
+  } catch (error) {
+    session.abortTransaction();
+    throw error;
+  }
+
+  // return result;
+};
+const updateFacultyDb = async (
+  id: string,
+  payload: Partial<IFaculty>
+): Promise<IFaculty | null> => {
+  const isExist = await Faculty.findOne({ id });
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Faculty not found!');
+  }
+  const { name, ...facultyData } = payload;
+  const updatedFacultytData: Partial<IFaculty> = { ...facultyData };
+
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}`;
+      (updatedFacultytData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+  const result = Faculty.findOneAndUpdate({ id }, updatedFacultytData, {
+    new: true,
+  })
+    .populate('department')
+    .populate('faculty');
+  return result;
+};
 export const FacultyService = {
   getFacutiesFromDb,
+  getSingleFacultyFromDb,
+  deleteFacultyFromDb,
+  updateFacultyDb,
 };

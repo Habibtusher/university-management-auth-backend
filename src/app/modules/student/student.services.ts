@@ -77,7 +77,6 @@ const updateStudentToDb = async (
   id: string,
   payload: Partial<IStudent>
 ): Promise<IStudent | null> => {
-  logger.info(id);
   const isExist = await Student.findOne({ id });
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Student not found!');
@@ -108,7 +107,10 @@ const updateStudentToDb = async (
 
   const result = await Student.findOneAndUpdate({ id }, updatedStudentData, {
     new: true,
-  });
+  })
+    .populate('academicSemester')
+    .populate('academicDepartment')
+    .populate('academicFaculty');
   return result;
 };
 const deleteStudentFromDb = async (id: string): Promise<IStudent | null> => {
@@ -116,17 +118,14 @@ const deleteStudentFromDb = async (id: string): Promise<IStudent | null> => {
   session.startTransaction();
 
   try {
-    const result = await Student.findOneAndDelete({ _id: id }, { session })
+    const result = await Student.findOneAndDelete({ id }, { session })
       .populate('academicSemester')
       .populate('academicDepartment')
       .populate('academicFaculty');
     if (!result) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to delete student');
     }
-    const userDelete = await User.findOneAndDelete(
-      { student: id },
-      { session }
-    );
+    const userDelete = await User.findOneAndDelete({ id }, { session });
     if (!userDelete) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to delete user');
     }
