@@ -1,0 +1,49 @@
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:31:28.302Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:34:05.962Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:35:25.433Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:37:24.832Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:40:35.824Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:42:15.266Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}
+{
+  level: 'error',
+  service: 'user-service',
+  label: 'um',
+  timestamp: '2023-06-16T05:42:50.886Z',
+  [Symbol(errorLabels)]: Set(0) {}
+}

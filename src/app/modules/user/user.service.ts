@@ -4,11 +4,17 @@ import AcademicSemester from '../academicSemester/academicSemester.model';
 import { IStudent } from '../student/student.interface';
 import { IUser } from './user.interface';
 import User from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
 import { IFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
+import { IAdmin } from '../admin/admin.interface';
+import { Admin } from '../admin/admin.model';
 
 const createStudentToDb = async (
   student: IStudent,
@@ -107,6 +113,49 @@ const createFacultyToDb = async (faculty: IFaculty, user: IUser) => {
 
   return newUserData;
 };
+const createAdminDb = async (admin: IAdmin, user: IUser) => {
+  let newUserData = null;
+  if (!user.password) {
+    user.password = '###AAAaaa';
+  }
+  user.role = 'admin';
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const id = await generateAdminId();
+    user.id = id;
+    admin.id = id;
+    const newAdmin = await Admin.create([admin], { session });
+
+    if (!newAdmin) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create admin!');
+    }
+    user.admin = newAdmin[0]._id;
+
+    const newUser = await User.create([user], { session });
+
+    if (!newUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create user!');
+    }
+    newUserData = newUser[0];
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  }
+  if (newUserData) {
+    newUserData = await User.findOne({ id: newUserData.id }).populate({
+      path: 'admin',
+      populate: [
+        {
+          path: 'managementDepartment',
+        },
+      ],
+    });
+  }
+  return newUserData;
+};
 const getUsersFromDb = async () => {
   const result = await User.find();
 
@@ -116,4 +165,5 @@ export const UserService = {
   createStudentToDb,
   getUsersFromDb,
   createFacultyToDb,
+  createAdminDb,
 };
