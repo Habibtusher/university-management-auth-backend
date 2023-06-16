@@ -92,9 +92,33 @@ export const deleteAdminDb = async (id: string): Promise<IAdmin | null> => {
     throw error;
   }
 };
+export const updateAdminDb = async (
+  id: string,
+  payload: Partial<IAdmin>
+): Promise<IAdmin | null> => {
+  const isExist = await Admin.findOne({ id });
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Student not found!');
+  }
+  const { name, ...studentData } = payload;
+  const updatedStudentData: Partial<IAdmin> = { ...studentData };
 
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}`;
+      (updatedStudentData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+
+  const result = await Admin.findOneAndUpdate({ id }, updatedStudentData, {
+    new: true,
+  }).populate('managementDepartment');
+
+  return result;
+};
 export const AdminService = {
   getAllAdminDb,
   getSingleAdminDb,
   deleteAdminDb,
+  updateAdminDb,
 };

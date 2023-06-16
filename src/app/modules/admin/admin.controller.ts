@@ -43,8 +43,21 @@ const deleteAdmin = catchasync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateAdmin = catchasync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { ...data } = req.body;
+  const result = await AdminService.updateAdminDb(id, data);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin update successfully',
+    data: result,
+  });
+});
 export const AdminControllers = {
   getAllAdmin,
   getSingleAdmin,
   deleteAdmin,
+  updateAdmin,
 };

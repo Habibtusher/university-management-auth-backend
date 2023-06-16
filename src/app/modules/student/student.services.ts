@@ -135,7 +135,7 @@ const deleteStudentFromDb = async (id: string): Promise<IStudent | null> => {
     return result;
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
+    // session.endSession();
     throw error;
   }
 };
