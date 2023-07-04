@@ -15,14 +15,21 @@ import { IFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
 import { IAdmin } from '../admin/admin.interface';
 import { Admin } from '../admin/admin.model';
-
+import bcrypt from 'bcrypt';
+import config from '../../../config';
 const createStudentToDb = async (
   student: IStudent,
   user: IUser
 ): Promise<IUser | null> => {
   if (!user.password) {
-    user.password = '###AAAaaa';
+    user.password = config.default_user_password as string;
   }
+  //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+
   user.role = 'student';
   const academicSemester = await AcademicSemester.findById(
     student.academicSemester
@@ -72,8 +79,13 @@ const createStudentToDb = async (
 const createFacultyToDb = async (faculty: IFaculty, user: IUser) => {
   let newUserData = null;
   if (!user.password) {
-    user.password = '###AAAaaa';
+    user.password = config.default_user_password as string;
   }
+  // //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
   user.role = 'faculty';
   const session = await mongoose.startSession();
   try {
@@ -116,8 +128,13 @@ const createFacultyToDb = async (faculty: IFaculty, user: IUser) => {
 const createAdminDb = async (admin: IAdmin, user: IUser) => {
   let newUserData = null;
   if (!user.password) {
-    user.password = '###AAAaaa';
+    user.password = config.default_user_password as string;
   }
+  // //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
   user.role = 'admin';
   const session = await mongoose.startSession();
   try {
