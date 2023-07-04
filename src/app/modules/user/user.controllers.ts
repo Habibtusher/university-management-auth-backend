@@ -3,13 +3,14 @@ import { UserService } from './user.service';
 import catchasync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
+import { IUser } from './user.interface';
 
 const createStudent: RequestHandler = catchasync(
   async (req: Request, res: Response) => {
     const { student, ...userData } = req.body;
     const result = await UserService.createStudentToDb(student, userData);
 
-    sendResponse(res, {
+    sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Student created successfully!',
@@ -21,10 +22,11 @@ const createStudent: RequestHandler = catchasync(
 const createFaculty: RequestHandler = catchasync(
   async (req: Request, res: Response) => {
     const { faculty, ...userData } = req.body;
-
+    // eslint-disable-next-line no-console
+    console.log('object', req.cookies, 'cookie');
     const result = await UserService.createFacultyToDb(faculty, userData);
 
-    sendResponse(res, {
+    sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Faculty created successfully!',
@@ -39,7 +41,7 @@ const createAdmin: RequestHandler = catchasync(
 
     const result = await UserService.createAdminDb(admin, userData);
 
-    sendResponse(res, {
+    sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Admin created successfully!',

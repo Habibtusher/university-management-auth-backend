@@ -7,13 +7,15 @@ export type IUser = {
   id: string;
   role: string;
   password: string;
-  needsPasswordChange: true | false;
+  needsPasswordChange: boolean;
   student?: Types.ObjectId | IStudent;
   faculty?: Types.ObjectId | IFaculty;
   admin?: Types.ObjectId | IAdmin;
 };
-type IUserMethodes = {
-  isUserExist(id: string): Promise<boolean>;
+export type IUserMethodes = {
+  isUserExist(
+    id: string
+  ): Promise<Pick<IUser, 'id' | 'password' | 'role' | 'needsPasswordChange'>>;
   isPasswordMatched(
     givenPassword: string,
     savePassword: string
