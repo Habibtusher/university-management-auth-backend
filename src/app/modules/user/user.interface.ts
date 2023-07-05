@@ -12,13 +12,22 @@ export type IUser = {
   faculty?: Types.ObjectId | IFaculty;
   admin?: Types.ObjectId | IAdmin;
 };
-export type IUserMethodes = {
+export type UserModel = {
   isUserExist(
     id: string
   ): Promise<Pick<IUser, 'id' | 'password' | 'role' | 'needsPasswordChange'>>;
   isPasswordMatched(
     givenPassword: string,
-    savePassword: string
+    savedPassword: string
   ): Promise<boolean>;
-};
-export type UserModel = Model<IUser, Record<string, unknown>, IUserMethodes>;
+} & Model<IUser>;
+// export type IUserMethodes = {
+//   isUserExist(
+//     id: string
+//   ): Promise<Pick<IUser, 'id' | 'password' | 'role' | 'needsPasswordChange'>>;
+//   isPasswordMatched(
+//     givenPassword: string,
+//     savePassword: string
+//   ): Promise<boolean>;
+// };
+// export type UserModel = Model<IUser, Record<string, unknown>, IUserMethodes>;

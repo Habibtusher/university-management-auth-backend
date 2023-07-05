@@ -14,15 +14,15 @@ const loginUserDb = async (
   payload: ILoginUser
 ): Promise<ILoginUserResponse> => {
   const { id, password } = payload;
-  const user = new User();
-  const isUserExist = await user.isUserExist(id);
+  // const user = new User();
+  const isUserExist = await User.isUserExist(id);
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   if (
     isUserExist.password &&
-    !user.isPasswordMatched(password, isUserExist?.password)
+    !User.isPasswordMatched(password, isUserExist?.password)
   ) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorect');
   }
@@ -54,11 +54,11 @@ const refreshTokenDb = async (
       config.jwt.refresh_secret as Secret
     );
   } catch (error) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid access token');
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid refresh token');
   }
   const { userId, role } = varifiedToken;
-  const user = new User();
-  const isUserExist = await user.isUserExist(userId);
+  // const user = new User();
+  const isUserExist = await User.isUserExist(userId);
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User dose not exist');
   }
