@@ -4,7 +4,7 @@ import { AuthService } from './auth.services';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import config from '../../../config';
-import { ILoginUserResponse } from './auth.interface';
+import { ILoginUserResponse, IRefreshTokenResponse } from './auth.interface';
 
 const loginUser = catchasync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
@@ -23,4 +23,24 @@ const loginUser = catchasync(async (req: Request, res: Response) => {
     data: others,
   });
 });
-export const AuthController = { loginUser };
+const refreshToken = catchasync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+
+  const result = await AuthService.refreshTokenDb(refreshToken);
+
+  // set refresh token into cookie
+  const cookieOptions = {
+    secure: config.env === 'production',
+    httpOnly: true,
+  };
+
+  res.cookie('refreshToken', refreshToken, cookieOptions);
+
+  sendResponse<IRefreshTokenResponse>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'New access token generate successfully !',
+    data: result,
+  });
+});
+export const AuthController = { loginUser, refreshToken };

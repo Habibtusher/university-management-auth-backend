@@ -22,8 +22,7 @@ const createStudent: RequestHandler = catchasync(
 const createFaculty: RequestHandler = catchasync(
   async (req: Request, res: Response) => {
     const { faculty, ...userData } = req.body;
-    // eslint-disable-next-line no-console
-    console.log('object', req.cookies, 'cookie');
+
     const result = await UserService.createFacultyToDb(faculty, userData);
 
     sendResponse<IUser>(res, {

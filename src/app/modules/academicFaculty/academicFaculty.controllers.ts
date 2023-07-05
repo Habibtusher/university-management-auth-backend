@@ -27,6 +27,8 @@ const createAcademicFaculty = catchasync(
 const getAcademicFaculty = catchasync(async (req: Request, res: Response) => {
   const filter = pick(req.query, academicFacultyFilters);
   const pagination = pick(req.query, paginationFields);
+  // eslint-disable-next-line no-console
+  console.log(req.user, req.headers.authorization);
   const result = await AcademicFacultyService.getAcademicFacultyFromDb(
     filter,
     pagination
