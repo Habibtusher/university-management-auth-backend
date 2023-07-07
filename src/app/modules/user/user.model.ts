@@ -11,6 +11,7 @@ const userSchema = new Schema<IUser, UserModel>(
     faculty: { type: Schema.Types.ObjectId, ref: 'Faculty' },
     admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
     needsPasswordChange: { type: Boolean, default: true },
+    passwordChangedAt: { type: Date },
   },
   {
     timestamps: true,
