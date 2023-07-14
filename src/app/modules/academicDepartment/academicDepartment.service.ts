@@ -52,9 +52,8 @@ const getDepartmentFromDb = async (
   if (sortBy && sortOrder) {
     sortOpt[sortBy] = sortOrder;
   }
-
-  const result = await AcademicDepartment.find(whereCondition);
   const total = await AcademicDepartment.countDocuments()
+  const result = await AcademicDepartment.find(whereCondition)
     .sort(sortOpt)
     .skip(skip)
     .limit(limit)
