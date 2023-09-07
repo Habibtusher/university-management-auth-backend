@@ -6,6 +6,8 @@ import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 
 const router = express.Router();
+// eslint-disable-next-line no-console
+console.log('helloo from auth');
 router.post(
   '/login',
   validateRequest(AuthValidation.loginZodSchema),

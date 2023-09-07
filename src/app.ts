@@ -13,25 +13,26 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// app.get('/', (req: Request, res: Response) => {
+//   res.send('Hello World!');
+// });
+app.use(globalErrorHandler);
+// app.use((req: Request, res: Response, next: NextFunction) => {
+
+//   res.status(httpStatus.NOT_FOUND).json({
+//     success: false,
+//     message: 'API Not Found message!',
+//     errorMessages: [
+//       {
+//         path: req.originalUrl,
+//         message: 'API Not Found!',
+//       },
+//     ],
+//   });
+//   next();
+// });
+// eslint-disable-next-line no-console
+console.log('req.originalUrl');
 //!application routes
 app.use('/api/v1', Routes);
-// app.use('/api/v1/users', UserRoutes);
-// app.use('/api/v1/academic-semester', AcademicSemesterRoutes);
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
-app.use(globalErrorHandler);
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(httpStatus.NOT_FOUND).json({
-    success: false,
-    message: 'API Not Found!',
-    errorMessages: [
-      {
-        path: req.originalUrl,
-        message: 'API Not Found!',
-      },
-    ],
-  });
-  next();
-});
 export default app;

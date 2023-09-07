@@ -23,59 +23,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StudentControllers = void 0;
+exports.AuthController = void 0;
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
-const student_services_1 = require("./student.services");
+const auth_services_1 = require("./auth.services");
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
-const pagination_1 = require("../../../constant/pagination");
-const pick_1 = __importDefault(require("../../../shared/pick"));
-const student_constant_1 = require("./student.constant");
-const getAllStudents = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const filters = (0, pick_1.default)(req.query, student_constant_1.studentFilterableFields);
-    const paginationOtp = (0, pick_1.default)(req.query, pagination_1.paginationFields);
-    const result = yield student_services_1.StudentServices.getAllStudentsFromDb(filters, paginationOtp);
+const config_1 = __importDefault(require("../../../config"));
+const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const loginData = __rest(req.body, []);
+    const result = yield auth_services_1.AuthService.loginUserDb(loginData);
+    const { refreshToken } = result, others = __rest(result, ["refreshToken"]);
+    const cookieOpt = {
+        secure: config_1.default.env === 'production',
+        httpOnly: true,
+    };
+    res.cookie('refreshToken', refreshToken, cookieOpt);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'students',
-        data: result.data,
-        meta: result.meta,
+        message: 'User loggedin successfully',
+        data: others,
     });
 }));
-const getSingleStudentByID = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield student_services_1.StudentServices.getSingleStudentFromDb(id);
+const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { refreshToken } = req.cookies;
+    const result = yield auth_services_1.AuthService.refreshTokenDb(refreshToken);
+    // set refresh token into cookie
+    const cookieOptions = {
+        secure: config_1.default.env === 'production',
+        httpOnly: true,
+    };
+    res.cookie('refreshToken', refreshToken, cookieOptions);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
+        statusCode: 200,
         success: true,
-        message: 'students',
+        message: 'New access token generate successfully !',
         data: result,
     });
 }));
-const deleteStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield student_services_1.StudentServices.deleteStudentFromDb(id);
+const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const passwordData = __rest(req.body, []);
+    const result = yield auth_services_1.AuthService.changePasswordDb(user, passwordData);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Student delete successfully',
-    });
-}));
-const updateStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const data = __rest(req.body, []);
-    const result = yield student_services_1.StudentServices.updateStudentToDb(id, data);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Student update successfully',
+        message: 'password changed successfully',
         data: result,
     });
 }));
-exports.StudentControllers = {
-    getAllStudents,
-    getSingleStudentByID,
-    updateStudent,
-    deleteStudent,
-};
+exports.AuthController = { loginUser, refreshToken, changePassword };
