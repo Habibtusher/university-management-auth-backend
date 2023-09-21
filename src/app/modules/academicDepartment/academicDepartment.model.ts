@@ -1,10 +1,13 @@
 import { Schema, model } from 'mongoose';
 import {
-  AacademicDepartmentModel,
+  AcademicDepartmentModel,
   IAcademicDepartment,
-} from './academicDepartment.interface';
+} from './academicDepartment.interfaces';
 
-const academicDepartmentSchema = new Schema<IAcademicDepartment>(
+const AcademicDepartmentSchema = new Schema<
+  IAcademicDepartment,
+  AcademicDepartmentModel
+>(
   {
     title: {
       type: String,
@@ -16,6 +19,11 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
       ref: 'AcademicFaculty',
       required: true,
     },
+    syncId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,
@@ -25,9 +33,7 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
   }
 );
 
-const AcademicDepartment = model<IAcademicDepartment, AacademicDepartmentModel>(
-  'AcademicDepartment',
-  academicDepartmentSchema
-);
-
-export default AcademicDepartment;
+export const AcademicDepartment = model<
+  IAcademicDepartment,
+  AcademicDepartmentModel
+>('AcademicDepartment', AcademicDepartmentSchema);

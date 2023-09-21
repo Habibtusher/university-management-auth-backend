@@ -1,12 +1,12 @@
 import { Model, Types } from 'mongoose';
+import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interfaces';
+import { IAcademicFaculty } from '../academicFaculty/academicFaculty.interfaces';
+import { IAcademicSemester } from '../academicSemester/academicSemester.interface';
 
-import { IAcademicFaculty } from '../academicFaculty/academicFaculty.interface';
-import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interface';
-import { IAcademinsemester } from '../academicSemester/academicSemester.interface';
 export type UserName = {
   firstName: string;
   lastName: string;
-  middleName?: string;
+  middleName: string;
 };
 
 export type Guardian = {
@@ -25,6 +25,7 @@ export type LocalGuardian = {
   contactNo: string;
   address: string;
 };
+
 export type IStudent = {
   id: string;
   name: UserName; //embedded object
@@ -39,12 +40,13 @@ export type IStudent = {
   guardian: Guardian; // embedded object
   localGuardian: LocalGuardian; // embedded object
   academicFaculty: Types.ObjectId | IAcademicFaculty; // reference _id
-  academicDepartment: Types.ObjectId | IAcademicDepartment; // // reference _id
-  academicSemester: Types.ObjectId | IAcademinsemester; // reference _id
+  academicDepartment: Types.ObjectId | IAcademicDepartment; // reference _id
+  academicSemester: Types.ObjectId | IAcademicSemester; // reference _id
   profileImage?: string;
 };
 
 export type StudentModel = Model<IStudent, Record<string, unknown>>;
+
 export type IStudentFilters = {
   searchTerm?: string;
   id?: string;

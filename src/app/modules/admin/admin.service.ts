@@ -1,29 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status';
 import mongoose, { SortOrder } from 'mongoose';
-import { calculatePagination } from '../../../helper/paginationHelper';
+import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
-import { IPaginatioOpts } from '../../../interfaces/pagination';
+import { IPaginationOptions } from '../../../interfaces/pagination';
+import { User } from '../user/user.model';
+import { adminSearchableFields } from './admin.constant';
 import { IAdmin, IAdminFilters } from './admin.interface';
 import { Admin } from './admin.model';
-import { adminSearchableFields } from './admin.constant';
-import ApiError from '../../../errors/ApiError';
-import httpStatus from 'http-status';
-import User from '../user/user.model';
 
-const getAllAdminDb = async (
+const getSingleAdmin = async (id: string): Promise<IAdmin | null> => {
+  const result = await Admin.findOne({ id }).populate('managementDepartment');
+  return result;
+};
+
+const getAllAdmins = async (
   filters: IAdminFilters,
-  paginationOpt: IPaginatioOpts
+  paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IAdmin[]>> => {
-  const { page, limit, skip, sortBy, sortOrder } =
-    calculatePagination(paginationOpt);
-  const sortOpts: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortOpts[sortBy] = sortOrder;
-  }
+  // Extract searchTerm to implement search query
   const { searchTerm, ...filtersData } = filters;
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions);
 
-  const andCondition = [];
+  const andConditions = [];
+
+  // Search needs $or for searching in specified fields
   if (searchTerm) {
-    andCondition.push({
+    andConditions.push({
       $or: adminSearchableFields.map(field => ({
         [field]: {
           $regex: searchTerm,
@@ -32,93 +37,103 @@ const getAllAdminDb = async (
       })),
     });
   }
+
+  // Filters needs $and to fullfill all the conditions
   if (Object.keys(filtersData).length) {
-    andCondition.push({
-      $and: Object.entries(filtersData).map(([fields, value]) => ({
-        [fields]: value,
+    andConditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
       })),
     });
   }
 
-  const whereCondition =
-    andCondition.length > 0
-      ? {
-          $and: andCondition,
-        }
-      : {};
-  const result = await Admin.find(whereCondition)
+  // Dynamic sort needs  fields to  do sorting
+  const sortConditions: { [key: string]: SortOrder } = {};
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+
+  // If there is no condition , put {} to give all data
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
+
+  const result = await Admin.find(whereConditions)
     .populate('managementDepartment')
-    .sort(sortOpts)
+    .sort(sortConditions)
     .skip(skip)
     .limit(limit);
+
+  const total = await Admin.countDocuments(whereConditions);
+
   return {
     meta: {
-      total: await Admin.countDocuments(),
-      page: page,
-      limit: limit,
+      page,
+      limit,
+      total,
     },
     data: result,
   };
 };
-export const getSingleAdminDb = async (id: string): Promise<IAdmin | null> => {
-  const result = await Admin.findOne({ id });
-  return result;
-};
-export const deleteAdminDb = async (id: string): Promise<IAdmin | null> => {
-  const admin = await Admin.findOne({ id });
-  if (!admin) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'No admin found with this id');
-  }
-  const session = await mongoose.startSession();
 
-  try {
-    session.startTransaction();
-    const deleteAdmin = await Admin.findOneAndDelete(
-      { id },
-      { session }
-    ).populate('managementDepartment');
-    if (!deleteAdmin) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to delete admin');
-    }
-    const deleteUser = await User.findOneAndDelete({ id }, { session });
-    if (!deleteUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to delete user');
-    }
-    await session.commitTransaction();
-    await session.endSession();
-    return deleteAdmin;
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
-  }
-};
-export const updateAdminDb = async (
+const updateAdmin = async (
   id: string,
   payload: Partial<IAdmin>
 ): Promise<IAdmin | null> => {
   const isExist = await Admin.findOne({ id });
+
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Student not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found !');
   }
-  const { name, ...studentData } = payload;
-  const updatedStudentData: Partial<IAdmin> = { ...studentData };
+
+  const { name, ...adminData } = payload;
+
+  const updatedStudentData: Partial<IAdmin> = { ...adminData };
 
   if (name && Object.keys(name).length > 0) {
     Object.keys(name).forEach(key => {
-      const nameKey = `name.${key}`;
+      const nameKey = `name.${key}` as keyof Partial<IAdmin>;
       (updatedStudentData as any)[nameKey] = name[key as keyof typeof name];
     });
   }
 
   const result = await Admin.findOneAndUpdate({ id }, updatedStudentData, {
     new: true,
-  }).populate('managementDepartment');
-
+  });
   return result;
 };
+
+const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
+  // check if the faculty is exist
+  const isExist = await Admin.findOne({ id });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Faculty not found !');
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    //delete student first
+    const student = await Admin.findOneAndDelete({ id }, { session });
+    if (!student) {
+      throw new ApiError(404, 'Failed to delete student');
+    }
+    //delete user
+    await User.deleteOne({ id });
+    session.commitTransaction();
+    session.endSession();
+
+    return student;
+  } catch (error) {
+    session.abortTransaction();
+    throw error;
+  }
+};
+
 export const AdminService = {
-  getAllAdminDb,
-  getSingleAdminDb,
-  deleteAdminDb,
-  updateAdminDb,
+  getSingleAdmin,
+  getAllAdmins,
+  updateAdmin,
+  deleteAdmin,
 };

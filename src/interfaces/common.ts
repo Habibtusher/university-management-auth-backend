@@ -1,9 +1,5 @@
-import { genericErrorMeaagae } from './error';
-export type genericErrorResponse = {
-  statusCode: number;
-  message: string;
-  errorMessages: genericErrorMeaagae[];
-};
+import { IGenericErrorMessage } from './error';
+
 export type IGenericResponse<T> = {
   meta: {
     page: number;
@@ -11,4 +7,10 @@ export type IGenericResponse<T> = {
     total: number;
   };
   data: T;
+};
+
+export type IGenericErrorResponse = {
+  statusCode: number;
+  message: string;
+  errorMessages: IGenericErrorMessage[];
 };

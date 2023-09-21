@@ -1,35 +1,42 @@
-import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interface';
-import { IAcademicFaculty } from './../academicFaculty/academicFaculty.interface';
 import { Model, Types } from 'mongoose';
+import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interfaces';
+import { IAcademicFaculty } from '../academicFaculty/academicFaculty.interfaces';
 
 export type UserName = {
   firstName: string;
   lastName: string;
-  middleName?: string;
+  middleName: string;
 };
+
 export type IFaculty = {
   id: string;
   name: UserName;
-  gender: 'male' | 'female';
-  dateOfBirth: string;
+  profileImage: string;
+  dateOfBirth?: string;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  presentAddress: string;
-  permanentAddress: string;
-  department: Types.ObjectId | IAcademicDepartment;
-  faculty: Types.ObjectId | IAcademicFaculty;
-  designation: string;
+  gender?: 'male' | 'female';
+  permanentAddress?: string;
+  presentAddress?: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  profileImage: string;
+
+  academicDepartment: Types.ObjectId | IAcademicDepartment;
+  academicFaculty: Types.ObjectId | IAcademicFaculty;
+  designation: string;
 };
 
 export type FacultyModel = Model<IFaculty, Record<string, unknown>>;
+
 export type IFacultyFilters = {
   searchTerm?: string;
   id?: string;
-  bloodGroup?: string;
   email?: string;
   contactNo?: string;
   emergencyContactNo?: string;
+  gender?: 'male' | 'female';
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  academicDepartment?: string;
+  academicFaculty?: string;
+  designation?: string;
 };

@@ -1,17 +1,44 @@
-import { Schema, model } from 'mongoose';
-import { IUser, UserModel } from './user.interface';
-import config from '../../../config';
+/* eslint-disable @typescript-eslint/no-this-alias */
 import bcrypt from 'bcrypt';
-const userSchema = new Schema<IUser, UserModel>(
+import { Schema, model } from 'mongoose';
+import config from '../../../config';
+import { IUser, IUserMethods, UserModel } from './user.interface';
+
+const UserSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
-    id: { type: String, required: true, unique: true },
-    role: { type: String, required: true },
-    password: { type: String, required: true, select: 0 },
-    student: { type: Schema.Types.ObjectId, ref: 'Student' },
-    faculty: { type: Schema.Types.ObjectId, ref: 'Faculty' },
-    admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
-    needsPasswordChange: { type: Boolean, default: true },
-    passwordChangedAt: { type: Date },
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: 0,
+    },
+    needsPasswordChange: {
+      type: Boolean,
+      default: true,
+    },
+    passwordChangedAt: {
+      type: Date,
+    },
+    student: {
+      type: Schema.Types.ObjectId,
+      ref: 'Student',
+    },
+    faculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'Faculty',
+    },
+    admin: {
+      type: Schema.Types.ObjectId,
+      ref: 'Admin',
+    },
   },
   {
     timestamps: true,
@@ -21,47 +48,58 @@ const userSchema = new Schema<IUser, UserModel>(
   }
 );
 
-userSchema.statics.isUserExist = async function (
+UserSchema.statics.isUserExist = async function (
   id: string
-): Promise<Pick<
-  IUser,
-  'id' | 'password' | 'role' | 'needsPasswordChange'
-> | null> {
+): Promise<IUser | null> {
   return await User.findOne(
     { id },
     { id: 1, password: 1, role: 1, needsPasswordChange: 1 }
   );
 };
 
-userSchema.statics.isPasswordMatched = async function (
+UserSchema.statics.isPasswordMatched = async function (
   givenPassword: string,
   savedPassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(givenPassword, savedPassword);
 };
 
-// userSchema.methods.isUserExist = async function (
-//   id: string
-// ): Promise<Partial<IUser | null>> {
-//   const existingUser = await User.findOne(
-//     { id },
-//     { id: 1, password: 1, needsPasswordChange: 1, role: 1 }
-//   ).lean();
-//   return existingUser;
-// };
+UserSchema.methods.changedPasswordAfterJwtIssued = function (
+  jwtTimestamp: number
+) {
+  console.log({ jwtTimestamp }, 'hi');
+};
 
-// userSchema.methods.isPasswordMatched = async function (
-//   givenPassword: string,
-//   savePassword: string
-// ): Promise<boolean> {
-//   return await bcrypt.compare(givenPassword, savePassword);
-// };
-userSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_rounds)
+// User.create() / user.save()
+UserSchema.pre('save', async function (next) {
+  // hashing user password
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bycrypt_salt_rounds)
   );
+
+  if (!user.needsPasswordChange) {
+    user.passwordChangedAt = new Date();
+  }
+
   next();
 });
-const User = model<IUser, UserModel>('User', userSchema);
-export default User;
+
+export const User = model<IUser, UserModel>('User', UserSchema);
+
+// UserSchema.methods.isUserExist = async function (
+//   id: string
+// ): Promise<Partial<IUser> | null> {
+//   return await User.findOne(
+//     { id },
+//     { id: 1, password: 1, needsPasswordChange: 1 }
+//   );
+// };
+
+// UserSchema.methods.isPasswordMatched = async function (
+//   givenPassword: string,
+//   savedPassword: string
+// ): Promise<boolean> {
+//   return await bcrypt.compare(givenPassword, savedPassword);
+// };

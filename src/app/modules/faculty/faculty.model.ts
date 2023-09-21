@@ -1,12 +1,12 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import { FacultyModel, IFaculty } from './faculty.interface';
-import { bloodGroup, gender } from './faculty.const';
 
-const facultySchema = new Schema<IFaculty>(
+const FacultySchema = new Schema<IFaculty, FacultyModel>(
   {
     id: {
       type: String,
       required: true,
+      unique: true,
     },
     name: {
       type: {
@@ -14,22 +14,27 @@ const facultySchema = new Schema<IFaculty>(
           type: String,
           required: true,
         },
-        middleName: {
-          type: String,
-        },
         lastName: {
           type: String,
           required: true,
         },
+        middleName: {
+          type: String,
+          required: false,
+        },
       },
       required: true,
     },
-    gender: {
-      type: String,
-      enum: gender,
-    },
     dateOfBirth: {
       type: String,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     },
     email: {
       type: String,
@@ -45,24 +50,6 @@ const facultySchema = new Schema<IFaculty>(
       type: String,
       required: true,
     },
-    bloodGroup: {
-      type: String,
-      enum: bloodGroup,
-    },
-    profileImage: {
-      type: String,
-      // required: true,
-    },
-    department: {
-      type: Schema.Types.ObjectId,
-      ref: 'AcademicDepartment',
-      required: true,
-    },
-    faculty: {
-      type: Schema.Types.ObjectId,
-      ref: 'AcademicFaculty',
-      required: true,
-    },
     presentAddress: {
       type: String,
       required: true,
@@ -71,17 +58,28 @@ const facultySchema = new Schema<IFaculty>(
       type: String,
       required: true,
     },
+    academicDepartment: {
+      type: Types.ObjectId,
+      ref: 'AcademicDepartment',
+      required: true,
+    },
     designation: {
       type: String,
+      required: true,
+    },
+    profileImage: {
+      type: String,
+      // required: true,
+    },
+    academicFaculty: {
+      type: Types.ObjectId,
+      ref: 'AcademicFaculty',
       required: true,
     },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
   }
 );
 
-export const Faculty = model<IFaculty, FacultyModel>('Faculty', facultySchema);
+export const Faculty = model<IFaculty, FacultyModel>('Faculty', FacultySchema);

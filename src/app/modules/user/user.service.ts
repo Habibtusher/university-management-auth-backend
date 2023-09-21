@@ -1,64 +1,77 @@
+import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import config from '../../../config/index';
 import ApiError from '../../../errors/ApiError';
-import AcademicSemester from '../academicSemester/academicSemester.model';
+import { RedisClient } from '../../../shared/redis';
+import { IAcademicSemester } from '../academicSemester/academicSemester.interface';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
+import { IAdmin } from '../admin/admin.interface';
+import { Admin } from '../admin/admin.model';
+import { IFaculty } from '../faculty/faculty.interface';
+import { Faculty } from '../faculty/faculty.model';
 import { IStudent } from '../student/student.interface';
+import { Student } from '../student/student.model';
+import { EVENT_FACULTY_CREATED, EVENT_STUDENT_CREATED } from './user.constant';
 import { IUser } from './user.interface';
-import User from './user.model';
+import { User } from './user.model';
 import {
   generateAdminId,
   generateFacultyId,
   generateStudentId,
 } from './user.utils';
-import { Student } from '../student/student.model';
-import httpStatus from 'http-status';
-import { IFaculty } from '../faculty/faculty.interface';
-import { Faculty } from '../faculty/faculty.model';
-import { IAdmin } from '../admin/admin.interface';
-import { Admin } from '../admin/admin.model';
-import bcrypt from 'bcrypt';
-import config from '../../../config';
-const createStudentToDb = async (
+
+const createStudent = async (
   student: IStudent,
   user: IUser
 ): Promise<IUser | null> => {
+  // If password is not given,set default password
   if (!user.password) {
-    user.password = config.default_user_password as string;
+    user.password = config.default_student_pass as string;
   }
-  //hash password
-  // user.password = await bcrypt.hash(
-  //   user.password,
-  //   Number(config.bcrypt_salt_rounds)
-  // );
-
+  // set role
   user.role = 'student';
-  const academicSemester = await AcademicSemester.findById(
+
+  const academicsemester = await AcademicSemester.findById(
     student.academicSemester
-  );
-  let newUserData = null;
+  ).lean();
+
+  let newUserAllData = null;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const id = await generateStudentId(academicSemester);
+    // generate student id
+    const id = await generateStudentId(academicsemester as IAcademicSemester);
+    // set custom id into both  student & user
     user.id = id;
     student.id = id;
+
+    // Create student using sesssin
     const newStudent = await Student.create([student], { session });
+
     if (!newStudent.length) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create student');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create student');
     }
+
+    // set student _id (reference) into user.student
     user.student = newStudent[0]._id;
+
     const newUser = await User.create([user], { session });
+
     if (!newUser.length) {
-      throw new ApiError(400, 'Faield to create user');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
-    newUserData = newUser[0];
+    newUserAllData = newUser[0];
+
     await session.commitTransaction();
     await session.endSession();
   } catch (error) {
     await session.abortTransaction();
+    await session.endSession();
     throw error;
   }
-  if (newUserData) {
-    newUserData = await User.findOne({ id: newUserData.id }).populate({
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
       path: 'student',
       populate: [
         {
@@ -74,95 +87,130 @@ const createStudentToDb = async (
     });
   }
 
-  return newUserData;
-};
-const createFacultyToDb = async (faculty: IFaculty, user: IUser) => {
-  let newUserData = null;
-  if (!user.password) {
-    user.password = config.default_user_password as string;
+  if (newUserAllData) {
+    await RedisClient.publish(
+      EVENT_STUDENT_CREATED,
+      JSON.stringify(newUserAllData.student)
+    );
   }
-  // //hash password
-  // user.password = await bcrypt.hash(
-  //   user.password,
-  //   Number(config.bcrypt_salt_rounds)
-  // );
+
+  return newUserAllData;
+};
+
+const createFaculty = async (
+  faculty: IFaculty,
+  user: IUser
+): Promise<IUser | null> => {
+  // If password is not given,set default password
+  if (!user.password) {
+    user.password = config.default_faculty_pass as string;
+  }
+
+  // set role
   user.role = 'faculty';
+
+  let newUserAllData = null;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
+    // generate faculty id
     const id = await generateFacultyId();
+    // set custom id into both  faculty & user
     user.id = id;
     faculty.id = id;
+    // Create faculty using sesssin
     const newFaculty = await Faculty.create([faculty], { session });
+
     if (!newFaculty.length) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create faculty');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create faculty ');
     }
+    // set faculty _id (reference) into user.student
     user.faculty = newFaculty[0]._id;
+
     const newUser = await User.create([user], { session });
+
     if (!newUser.length) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create faculty');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create faculty');
     }
-    newUserData = newUser[0];
+    newUserAllData = newUser[0];
+
     await session.commitTransaction();
     await session.endSession();
   } catch (error) {
     await session.abortTransaction();
+    await session.endSession();
     throw error;
   }
-  if (newUserData) {
-    newUserData = await User.findOne({ id: newUserData.id }).populate({
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
       path: 'faculty',
       populate: [
         {
-          path: 'department',
+          path: 'academicDepartment',
         },
         {
-          path: 'faculty',
+          path: 'academicFaculty',
         },
       ],
     });
   }
 
-  return newUserData;
-};
-const createAdminDb = async (admin: IAdmin, user: IUser) => {
-  let newUserData = null;
-  if (!user.password) {
-    user.password = config.default_user_password as string;
+  if (newUserAllData) {
+    await RedisClient.publish(
+      EVENT_FACULTY_CREATED,
+      JSON.stringify(newUserAllData.faculty)
+    );
   }
-  // //hash password
-  // user.password = await bcrypt.hash(
-  //   user.password,
-  //   Number(config.bcrypt_salt_rounds)
-  // );
+
+  return newUserAllData;
+};
+
+const createAdmin = async (
+  admin: IAdmin,
+  user: IUser
+): Promise<IUser | null> => {
+  // If password is not given,set default password
+  if (!user.password) {
+    user.password = config.default_admin_pass as string;
+  }
+  // set role
   user.role = 'admin';
+
+  let newUserAllData = null;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
+    // generate admin id
     const id = await generateAdminId();
     user.id = id;
     admin.id = id;
+
     const newAdmin = await Admin.create([admin], { session });
 
-    if (!newAdmin) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create admin!');
+    if (!newAdmin.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create faculty ');
     }
+
     user.admin = newAdmin[0]._id;
 
     const newUser = await User.create([user], { session });
 
-    if (!newUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Faield to create user!');
+    if (!newUser.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create admin');
     }
-    newUserData = newUser[0];
+    newUserAllData = newUser[0];
+
     await session.commitTransaction();
     await session.endSession();
   } catch (error) {
     await session.abortTransaction();
+    await session.endSession();
     throw error;
   }
-  if (newUserData) {
-    newUserData = await User.findOne({ id: newUserData.id }).populate({
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
       path: 'admin',
       populate: [
         {
@@ -171,16 +219,12 @@ const createAdminDb = async (admin: IAdmin, user: IUser) => {
       ],
     });
   }
-  return newUserData;
-};
-const getUsersFromDb = async () => {
-  const result = await User.find();
 
-  return result;
+  return newUserAllData;
 };
+
 export const UserService = {
-  createStudentToDb,
-  getUsersFromDb,
-  createFacultyToDb,
-  createAdminDb,
+  createStudent,
+  createFaculty,
+  createAdmin,
 };

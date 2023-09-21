@@ -1,30 +1,41 @@
 /* eslint-disable no-console */
+import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
+import subscribeToEvents from './app/events';
 import config from './config/index';
-import { logger, errrorLogger } from './shared/logger';
-import { Server } from 'http';
-let server: Server;
-process.on('uncaughtException', err => {
-  console.log(err);
+
+import { RedisClient } from './shared/redis';
+
+process.on('uncaughtException', error => {
+  console.log(error);
   process.exit(1);
 });
 
-async function main() {
+let server: Server;
+
+async function bootstrap() {
   try {
-    await mongoose.connect(config.database_url as string);
-    console.log('database connected');
-    server = app.listen(config.port, () => {
-      console.log(`Application listening on port ${config.port}`);
+    await RedisClient.connect().then(() => {
+      subscribeToEvents();
     });
-  } catch (error) {
-    console.log('faield to connect db', error);
+
+    await mongoose.connect(config.database_url as string);
+    // logger.info(`🛢   Database is connected successfully`);
+    console.log(`🛢   Database is connected successfully`);
+
+    server = app.listen(config.port, () => {
+      // logger.info(`Application  listening on port ${config.port}`);
+      console.log(`Application  listening on port ${config.port}`);
+    });
+  } catch (err) {
+    console.log('Failed to connect database', err);
   }
 
-  process.on('unhandledRejection', err => {
+  process.on('unhandledRejection', error => {
     if (server) {
       server.close(() => {
-        console.log(err);
+        console.log(error);
         process.exit(1);
       });
     } else {
@@ -32,11 +43,12 @@ async function main() {
     }
   });
 }
-main();
 
-process.on('SIGTERM', () => {
-  console.log('SIGTERM is received');
-  if (server) {
-    server.close();
-  }
-});
+bootstrap();
+
+// process.on('SIGTERM', () => {
+//   logger.info('SIGTERM is received');
+//   if (server) {
+//     server.close();
+//   }
+// });

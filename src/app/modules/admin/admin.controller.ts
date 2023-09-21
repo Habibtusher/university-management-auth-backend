@@ -1,63 +1,71 @@
-import { IAdmin } from './admin.interface';
 import { Request, Response } from 'express';
-import catchasync from '../../../shared/catchAsync';
-import pick from '../../../shared/pick';
-import { adminFilterableFields } from './admin.constant';
-import { paginationFields } from '../../../constant/pagination';
-import { AdminService } from './admin.service';
-import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
+import { paginationFields } from '../../../constants/pagination';
+import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
+import sendResponse from '../../../shared/sendResponse';
 
-const getAllAdmin = catchasync(async (req: Request, res: Response) => {
+import { IAdmin } from './admin.interface';
+import { AdminService } from './admin.service';
+import { adminFilterableFields } from './admin.const';
+
+const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await AdminService.getSingleAdmin(id);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin fetched successfully !',
+    data: result,
+  });
+});
+
+const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, adminFilterableFields);
-  const paginationOpt = pick(req.query, paginationFields);
-  const result = await AdminService.getAllAdminDb(filters, paginationOpt);
+  const paginationOptions = pick(req.query, paginationFields);
+
+  const result = await AdminService.getAllAdmins(filters, paginationOptions);
 
   sendResponse<IAdmin[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'successfully',
-    data: result.data,
+    message: 'Admins fetched successfully !',
     meta: result.meta,
+    data: result.data,
   });
 });
-const getSingleAdmin = catchasync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await AdminService.getSingleAdminDb(id);
+
+const updateAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+
+  const result = await AdminService.updateAdmin(id, updatedData);
 
   sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'successfully',
+    message: 'Admin updated successfully !',
     data: result,
   });
 });
-const deleteAdmin = catchasync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await AdminService.deleteAdminDb(id);
+
+const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const result = await AdminService.deleteAdmin(id);
 
   sendResponse<IAdmin>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin delete successfully',
+    message: 'Admin deleted successfully !',
     data: result,
   });
 });
-const updateAdmin = catchasync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { ...data } = req.body;
-  const result = await AdminService.updateAdminDb(id, data);
 
-  sendResponse<IAdmin>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Admin update successfully',
-    data: result,
-  });
-});
-export const AdminControllers = {
-  getAllAdmin,
+export const AdminController = {
   getSingleAdmin,
-  deleteAdmin,
+  getAllAdmins,
   updateAdmin,
+  deleteAdmin,
 };

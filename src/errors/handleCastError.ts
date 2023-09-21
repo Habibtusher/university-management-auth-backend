@@ -1,10 +1,14 @@
 import mongoose from 'mongoose';
-import { genericErrorMeaagae } from '../interfaces/error';
+import { IGenericErrorMessage } from '../interfaces/error';
 
-export const handleCastError = (err: mongoose.Error.CastError) => {
-  const errors: genericErrorMeaagae[] = [
-    { path: err.path, message: 'Invalid Id' },
+const handleCastError = (error: mongoose.Error.CastError) => {
+  const errors: IGenericErrorMessage[] = [
+    {
+      path: error.path,
+      message: 'Invalid Id',
+    },
   ];
+
   const statusCode = 400;
   return {
     statusCode,
@@ -12,3 +16,5 @@ export const handleCastError = (err: mongoose.Error.CastError) => {
     errorMessages: errors,
   };
 };
+
+export default handleCastError;

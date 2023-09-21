@@ -1,38 +1,45 @@
-import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-
-import globalErrorHandler from './app/middlewares/globalErrorHandler';
-import Routes from './app/routes';
+import express, { Application, NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import routes from './app/routes';
+
 import cookieParser from 'cookie-parser';
-// import ApiError from './errors/ApiError'
 
 const app: Application = express();
+
 app.use(cors());
 app.use(cookieParser());
+
+//parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.get('/', (req: Request, res: Response) => {
-//   res.send('Hello World!');
-// });
-app.use(globalErrorHandler);
-// app.use((req: Request, res: Response, next: NextFunction) => {
+// app.use('/api/v1/users/', UserRoutes);
+// app.use('/api/v1/academic-semesters', AcademicSemesterRoutes);
+app.use('/api/v1', routes);
 
-//   res.status(httpStatus.NOT_FOUND).json({
-//     success: false,
-//     message: 'API Not Found message!',
-//     errorMessages: [
-//       {
-//         path: req.originalUrl,
-//         message: 'API Not Found!',
-//       },
-//     ],
-//   });
-//   next();
-// });
-// eslint-disable-next-line no-console
-console.log('req.originalUrl');
-//!application routes
-app.use('/api/v1', Routes);
+//Testing
+// app.get('/', async (req: Request, res: Response, next: NextFunction) => {
+//   throw new Error('Testing Error logger')
+// })
+
+//global error handler
+app.use(globalErrorHandler);
+
+//handle not found
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(httpStatus.NOT_FOUND).json({
+    success: false,
+    message: 'Not Found',
+    errorMessages: [
+      {
+        path: req.originalUrl,
+        message: 'API Not Found',
+      },
+    ],
+  });
+  next();
+});
+
 export default app;

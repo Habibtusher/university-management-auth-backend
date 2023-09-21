@@ -1,4 +1,4 @@
-export type genericErrorMeaagae = {
+export type IGenericErrorMessage = {
   path: string | number;
   message: string;
 };

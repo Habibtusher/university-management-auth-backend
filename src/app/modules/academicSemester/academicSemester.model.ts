@@ -1,44 +1,50 @@
+import httpStatus from 'http-status';
 import { Schema, model } from 'mongoose';
-import {
-  AcademicsemeSterModel,
-  IAcademinsemester,
-} from './academicSemester.interface';
-import {
-  academicsemesterCodes,
-  academicsemesterMonths,
-  academicsemesterTitles,
-} from './academicSemester.constant';
 import ApiError from '../../../errors/ApiError';
-import status from 'http-status';
+import {
+  academicSemesterCodes,
+  academicSemesterTitles,
+  acdemicSemesterMonths,
+} from './academicSemester.constant';
+import { IAcademicSemester } from './academicSemester.interface';
 
-const academicSemesterSchema = new Schema<IAcademinsemester>(
+const academicSemesterSchema = new Schema<IAcademicSemester>(
   {
     title: {
       type: String,
       required: true,
-      enum: academicsemesterTitles,
+      enum: academicSemesterTitles,
     },
     year: {
-      type: String,
+      type: Number,
       required: true,
     },
     code: {
       type: String,
       required: true,
-      enum: academicsemesterCodes,
+      enum: academicSemesterCodes,
     },
     startMonth: {
       type: String,
       required: true,
-      enum: academicsemesterMonths,
+      enum: acdemicSemesterMonths,
     },
     endMonth: {
       type: String,
       required: true,
-      enum: academicsemesterMonths,
+      enum: acdemicSemesterMonths,
+    },
+    syncId: {
+      type: String,
+      required: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  }
 );
 
 academicSemesterSchema.pre('save', async function (next) {
@@ -46,14 +52,17 @@ academicSemesterSchema.pre('save', async function (next) {
     title: this.title,
     year: this.year,
   });
+
   if (isExist) {
-    throw new ApiError(status.CONFLICT, 'Academic semester is already exist!');
-  } else {
-    next();
+    throw new ApiError(
+      httpStatus.CONFLICT,
+      'Academic semester is already exist !'
+    );
   }
+  next();
 });
-const AcademicSemester = model<IAcademinsemester, AcademicsemeSterModel>(
+
+export const AcademicSemester = model<IAcademicSemester>(
   'AcademicSemester',
   academicSemesterSchema
 );
-export default AcademicSemester;

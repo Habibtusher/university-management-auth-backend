@@ -2,9 +2,9 @@ import { Schema, model } from 'mongoose';
 import {
   IManagementDepartment,
   ManagementDepartmentModel,
-} from './managementDepartment.interface';
+} from './managementDepartment.inerface';
 
-const managementDepartmentSchema = new Schema<
+const ManagementDepartmentSchema = new Schema<
   IManagementDepartment,
   ManagementDepartmentModel
 >(
@@ -12,6 +12,7 @@ const managementDepartmentSchema = new Schema<
     title: {
       type: String,
       required: true,
+      unique: true,
     },
   },
   {
@@ -21,7 +22,8 @@ const managementDepartmentSchema = new Schema<
     },
   }
 );
+
 export const ManagementDepartment = model<
   IManagementDepartment,
   ManagementDepartmentModel
->('ManagementDepartment', managementDepartmentSchema);
+>('ManagementDepartment', ManagementDepartmentSchema);

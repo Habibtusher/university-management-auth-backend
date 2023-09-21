@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import { genericErrorMeaagae } from '../interfaces/error';
-import { genericErrorResponse } from '../interfaces/common';
+import { IGenericErrorResponse } from '../interfaces/common';
+import { IGenericErrorMessage } from '../interfaces/error';
 
 const handleValidationError = (
-  err: mongoose.Error.ValidationError
-): genericErrorResponse => {
-  const errors: genericErrorMeaagae[] = Object.values(err.errors).map(
+  error: mongoose.Error.ValidationError
+): IGenericErrorResponse => {
+  const errors: IGenericErrorMessage[] = Object.values(error.errors).map(
     (el: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
       return {
         path: el?.path,
@@ -20,4 +20,5 @@ const handleValidationError = (
     errorMessages: errors,
   };
 };
+
 export default handleValidationError;
