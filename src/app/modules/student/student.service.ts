@@ -132,6 +132,11 @@ const updateStudent = async (
 const deleteStudent = async (id: string): Promise<IStudent | null> => {
   // check if the student is exist
   const isExist = await Student.findOne({ id });
+  console.log(
+    '🚀 ~ file: student.service.ts:135 ~ deleteStudent ~ isExist:',
+    isExist,
+    id
+  );
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Student not found !');
